@@ -1,0 +1,22 @@
+# dependencies
+node_modules
+
+# sst
+.sst
+.build
+
+# opennext
+.open-next
+
+# misc
+.DS_Store
+
+# local env files
+.env*.local
+.idea
+.sst.*
+cdk.context.json
+/resources/job/target/
+.sst.config.*.mjs
+.env
+/cli/result.json

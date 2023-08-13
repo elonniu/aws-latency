@@ -7,6 +7,7 @@ import axios from 'axios';
 import stripAnsi from 'strip-ansi';
 import {DescribeRegionsCommand, EC2Client} from "@aws-sdk/client-ec2";
 import ping from 'ping';
+import {currentVersion} from "sst-helper";
 
 const client = new EC2Client({});
 
@@ -87,7 +88,8 @@ async function versionCheck() {
     try {
         const response = await axios.get('https://registry.npmjs.org/aws-latency');
         const serverVersion = response.data['dist-tags'].latest;
-        if (serverVersion !== program.version()) {
+        const latestVersion = await currentVersion('aws-latency');
+        if (serverVersion !== latestVersion) {
             spinner.stop();
             console.log(chalk.yellow(`Version ${chalk.bold(chalk.green(serverVersion))} is available. Your version is ${chalk.bold(chalk.red(program.version()))}`));
             console.log(chalk.yellow(`Please update by run: ${chalk.bold(chalk.green('npm i -g aws-latency'))}\n`));

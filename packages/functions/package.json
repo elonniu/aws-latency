@@ -10,7 +10,7 @@
     "@types/node": "^20.3.2"
   },
   "dependencies": {
-    "@aws-sdk/client-ec2": "^3.390.0",
-    "aws-sdk": "^2.1408.0"
+    "@aws-sdk/client-cloudformation": "^3.388.0",
+    "@aws-sdk/client-ec2": "^3.390.0"
   }
 }

@@ -42,7 +42,7 @@ const run = async () => {
 
                 if (list.length === data.Regions.length) {
                     list.sort((a, b) => (a.time > b.time) ? 1 : -1);
-                    taskList(list);
+                    regionList(list);
                 }
             });
 
@@ -52,7 +52,6 @@ const run = async () => {
 };
 
 run().catch(console.error);
-
 
 function table(data, columnOrder = []) {
 
@@ -75,7 +74,7 @@ function table(data, columnOrder = []) {
     console.log(table.toString());
 }
 
-function taskList(data) {
+function regionList(data) {
     if (data.length === 0) {
         return;
     }

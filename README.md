@@ -1,6 +1,6 @@
 # AWS Regions Latency
 
-`aws-latency` is a CLI for testing the latency AWS regions.
+`aws-latency` is a CLI for testing the latency of AWS regions.
 
 ### 1. Install the CLI
 

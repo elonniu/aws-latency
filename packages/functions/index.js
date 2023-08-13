@@ -32,7 +32,6 @@ const run = async () => {
 
     for (const region of data.Regions) {
 
-
         ping.promise.probe(region.Endpoint)
             .then(function (res) {
 
@@ -47,7 +46,6 @@ const run = async () => {
             });
 
     }
-
 
 };
 
@@ -79,7 +77,11 @@ function regionList(data) {
         return;
     }
 
-    table(data, ["host", "time", "packetLoss", "alive", "numeric_host"]);
+    data.forEach((item, index) => {
+        item.index = index + 1;
+    });
+
+    table(data, ["index", "host", "time", "packetLoss", "alive", "numeric_host"]);
 }
 
 async function versionCheck() {

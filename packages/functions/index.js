@@ -79,7 +79,7 @@ function regionList(data) {
         return;
     }
 
-    table(data, ["host", "alive", "time", "packetLoss", "numeric_host"]);
+    table(data, ["host", "time", "packetLoss", "alive", "numeric_host"]);
 }
 
 async function versionCheck() {

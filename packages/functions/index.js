@@ -38,7 +38,7 @@ const run = async () => {
 
                 list.push(res);
 
-                console.log(region.Endpoint + ' ' + res.time);
+                console.log(region.Endpoint + ' ' + res.time + 'ms');
 
                 if (list.length === data.Regions.length) {
                     list.sort((a, b) => (a.time > b.time) ? 1 : -1);
@@ -91,12 +91,13 @@ async function versionCheck() {
         const latestVersion = await currentVersion('aws-latency');
         if (serverVersion !== latestVersion) {
             spinner.stop();
-            console.log(chalk.yellow(`Version ${chalk.bold(chalk.green(serverVersion))} is available. Your version is ${chalk.bold(chalk.red(program.version()))}`));
+            console.log(chalk.yellow(`Version ${chalk.bold(chalk.green(serverVersion))} is available. Your version is ${chalk.bold(chalk.red(latestVersion))}`));
             console.log(chalk.yellow(`Please update by run: ${chalk.bold(chalk.green('npm i -g aws-latency'))}\n`));
             process.exit(1);
         }
     } catch (error) {
-        console.error(chalk.red('Failed to check for updates.'));
+        console.error(chalk.red('Failed to check for updates: ' + error.message));
     }
+
     spinner.stop();
 }

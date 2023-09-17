@@ -1,6 +1,6 @@
 {
   "name": "@aws-latency/functions",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "type": "module",
   "scripts": {
     "test": "sst bind vitest",

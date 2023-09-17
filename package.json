@@ -1,7 +1,7 @@
 {
   "name": "aws-latency",
   "description": "AWS Regions Latency",
-  "version": "0.0.10",
+  "version": "0.0.12",
   "type": "module",
   "license": "Apache-2.0",
   "bin": {
@@ -28,7 +28,7 @@
     "ping": "^0.4.4",
     "sst-helper": "0.0.94",
     "strip-ansi": "^7.1.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.1.6"
+    "typescript": "^5.1.6",
+    "@aws-sdk/client-cloudformation": "^3.414.0"
   }
 }

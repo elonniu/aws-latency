@@ -5,44 +5,62 @@ import Table from 'cli-table3';
 import chalk from 'chalk';
 import axios from 'axios';
 import stripAnsi from 'strip-ansi';
-import {DescribeRegionsCommand, EC2Client} from "@aws-sdk/client-ec2";
 import ping from 'ping';
 import {currentVersion} from "sst-helper";
 
-const client = new EC2Client({});
-
 await versionCheck();
 
+const regions = [
+    {Endpoint: 'ec2.cn-north-1.amazonaws.com.cn', RegionName: 'cn-north-1', City: 'Beijing, China'},
+    {Endpoint: 'ec2.cn-northwest-1.amazonaws.com.cn', RegionName: 'cn-northwest-1', City: 'Ningxia, China'},
+    {Endpoint: 'ec2.ap-south-1.amazonaws.com', RegionName: 'ap-south-1', City: 'Mumbai, India'},
+    {Endpoint: 'ec2.eu-south-1.amazonaws.com', RegionName: 'eu-south-1', City: 'Milan, Italy'},
+    {Endpoint: 'ec2.ap-south-2.amazonaws.com', RegionName: 'ap-south-2', City: 'Hyderabad'},
+    {Endpoint: 'ec2.eu-south-2.amazonaws.com', RegionName: 'eu-south-2', City: 'Spain'},
+    {Endpoint: 'ec2.me-central-1.amazonaws.com', RegionName: 'me-central-1', City: 'UAE'},
+    {Endpoint: 'ec2.eu-central-2.amazonaws.com', RegionName: 'eu-central-2', City: 'Zurich'},
+    {Endpoint: 'ec2.ap-southeast-3.amazonaws.com', RegionName: 'ap-southeast-3', City: 'Jakarta'},
+    {Endpoint: 'ec2.ap-southeast-4.amazonaws.com', RegionName: 'ap-southeast-4', City: 'Melbourne'},
+    {Endpoint: 'ec2.il-central-1.amazonaws.com', RegionName: 'il-central-1', City: 'Tel Aviv'},
+    {Endpoint: 'ec2.ca-central-1.amazonaws.com', RegionName: 'ca-central-1', City: 'Montreal, Canada'},
+    {Endpoint: 'ec2.eu-central-1.amazonaws.com', RegionName: 'eu-central-1', City: 'Frankfurt, Germany'},
+    {Endpoint: 'ec2.us-west-1.amazonaws.com', RegionName: 'us-west-1', City: 'N. California, USA'},
+    {Endpoint: 'ec2.us-west-2.amazonaws.com', RegionName: 'us-west-2', City: 'Oregon, USA'},
+    {Endpoint: 'ec2.af-south-1.amazonaws.com', RegionName: 'af-south-1', City: 'Cape Town, South Africa'},
+    {Endpoint: 'ec2.eu-north-1.amazonaws.com', RegionName: 'eu-north-1', City: 'Stockholm, Sweden'},
+    {Endpoint: 'ec2.eu-west-3.amazonaws.com', RegionName: 'eu-west-3', City: 'Paris, France'},
+    {Endpoint: 'ec2.eu-west-2.amazonaws.com', RegionName: 'eu-west-2', City: 'London, United Kingdom'},
+    {Endpoint: 'eu-west-1.ec2.amazonaws.com', RegionName: 'eu-west-1', City: 'Ireland'},
+    {Endpoint: 'ec2.ap-northeast-3.amazonaws.com', RegionName: 'ap-northeast-3', City: 'Osaka, Japan'},
+    {Endpoint: 'ec2.ap-northeast-2.amazonaws.com', RegionName: 'ap-northeast-2', City: 'Seoul, South Korea'},
+    {Endpoint: 'ec2.me-south-1.amazonaws.com', RegionName: 'me-south-1', City: 'Bahrain'},
+    {Endpoint: 'ec2.ap-northeast-1.amazonaws.com', RegionName: 'ap-northeast-1', City: 'Tokyo, Japan'},
+    {Endpoint: 'ec2.sa-east-1.amazonaws.com', RegionName: 'sa-east-1', City: 'Sao Paulo, Brazil'},
+    {Endpoint: 'ec2.ap-east-1.amazonaws.com', RegionName: 'ap-east-1', City: 'Hong Kong'},
+    {Endpoint: 'ec2.ap-southeast-1.amazonaws.com', RegionName: 'ap-southeast-1', City: 'Singapore'},
+    {Endpoint: 'ec2.ap-southeast-2.amazonaws.com', RegionName: 'ap-southeast-2', City: 'Sydney, Australia'},
+    {Endpoint: 'ec2.amazonaws.com', RegionName: 'us-east-1', City: 'N. Virginia, USA'},
+    {Endpoint: 'ec2.us-east-2.amazonaws.com', RegionName: 'us-east-2', City: 'Ohio, USA'},
+];
+
 const run = async () => {
-    const data = await client.send(new DescribeRegionsCommand({}));
 
-    let list = [];
+    let results = [];
 
-    data.Regions.push({
-        Endpoint: 'ec2.cn-north-1.amazonaws.com.cn',
-        RegionName: 'cn-north-1',
-        OptInStatus: 'opted-in'
-    });
+    for (const region of regions) {
 
-    data.Regions.push({
-        Endpoint: 'ec2.cn-northwest-1.amazonaws.com.cn',
-        RegionName: 'cn-northwest-1',
-        OptInStatus: 'opted-in'
-    });
-
-    for (const region of data.Regions) {
-
-        ping.promise.probe(region.Endpoint)
+        ping.promise.probe(region.Endpoint, {timeout: 10})
             .then(function (res) {
 
-                list.push(res);
+                results.push(res);
 
                 console.log(region.Endpoint + ' ' + res.time + 'ms');
 
-                if (list.length === data.Regions.length) {
-                    list.sort((a, b) => (a.time > b.time) ? 1 : -1);
-                    regionList(list);
+                if (results.length === regions.length) {
+                    results.sort((a, b) => (a.time > b.time) ? 1 : -1);
+                    regionList(results);
                 }
+
             });
 
     }
@@ -72,16 +90,21 @@ function table(data, columnOrder = []) {
     console.log(table.toString());
 }
 
-function regionList(data) {
-    if (data.length === 0) {
+function regionList(results) {
+    if (results.length === 0) {
         return;
     }
 
-    data.forEach((item, index) => {
+    results.forEach((item, index) => {
         item.index = index + 1;
+        // get city from regions
+        item.city = regions.find(region => region.Endpoint === item.host)?.City;
+        // region only from hostname like ec2.ap-southeast-1.amazonaws.com
+        item.region = regions.find(region => region.Endpoint === item.host)?.RegionName;
     });
 
-    table(data, ["index", "host", "time", "packetLoss", "alive", "numeric_host"]);
+    table(results, ["index", "region", "time", "city", "host", "numeric_host"]);
+    console.log(chalk.yellow(`Total ${results.length} regions`));
 }
 
 async function versionCheck() {

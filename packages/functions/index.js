@@ -52,9 +52,15 @@ const run = async () => {
         ping.promise.probe(region.Endpoint, {timeout: 10})
             .then(function (res) {
 
+                res.host = region.Endpoint;
+                // get city from regions
+                res.city = regions.find(region => region.Endpoint === res.host)?.City;
+                // region only from hostname like ec2.ap-southeast-1.amazonaws.com
+                res.region = regions.find(region => region.Endpoint === res.host)?.RegionName;
+
                 results.push(res);
 
-                console.log(region.Endpoint + ' ' + res.time + 'ms');
+                console.log(chalk.yellow(res.region), region.Endpoint, chalk.green(res.time + 'ms'));
 
                 if (results.length === regions.length) {
                     results.sort((a, b) => (a.time > b.time) ? 1 : -1);
@@ -97,10 +103,6 @@ function regionList(results) {
 
     results.forEach((item, index) => {
         item.index = index + 1;
-        // get city from regions
-        item.city = regions.find(region => region.Endpoint === item.host)?.City;
-        // region only from hostname like ec2.ap-southeast-1.amazonaws.com
-        item.region = regions.find(region => region.Endpoint === item.host)?.RegionName;
     });
 
     table(results, ["index", "region", "time", "city", "host", "numeric_host"]);

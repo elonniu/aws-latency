@@ -105,7 +105,7 @@ function regionList(results) {
         item.index = index + 1;
     });
 
-    table(results, ["index", "region", "time", "city", "host", "numeric_host"]);
+    table(results, ["index", "region", "time", "city", "host"]);
     console.log(chalk.yellow(`Total ${results.length} regions`));
 }
 

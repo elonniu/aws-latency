@@ -60,13 +60,13 @@ const run = async () => {
 
                 results.push({
                     region: `${res.region} (${res.city})`,
-                    time: res.time,
+                    ms: res.time,
                 });
 
                 console.log(chalk.yellow(res.region), region.Endpoint, chalk.green(res.time + 'ms'));
 
                 if (results.length === regions.length) {
-                    results.sort((a, b) => (a.time > b.time) ? 1 : -1);
+                    results.sort((a, b) => (a.ms > b.ms) ? 1 : -1);
                     regionList(results);
                 }
 
@@ -108,7 +108,7 @@ function regionList(results) {
         item.index = index + 1;
     });
 
-    table(results, ["index", "time", "region"]);
+    table(results, ["index", "ms", "region"]);
     console.log(chalk.yellow(`Total ${results.length} regions`));
 }
 

@@ -58,7 +58,10 @@ const run = async () => {
                 // region only from hostname like ec2.ap-southeast-1.amazonaws.com
                 res.region = regions.find(region => region.Endpoint === res.host)?.RegionName;
 
-                results.push(res);
+                results.push({
+                    region: `${res.region} (${res.city})`,
+                    time: res.time,
+                });
 
                 console.log(chalk.yellow(res.region), region.Endpoint, chalk.green(res.time + 'ms'));
 
@@ -105,7 +108,7 @@ function regionList(results) {
         item.index = index + 1;
     });
 
-    table(results, ["index", "region", "time", "city", "host"]);
+    table(results, ["index", "region", "time"]);
     console.log(chalk.yellow(`Total ${results.length} regions`));
 }
 
